@@ -4,11 +4,23 @@ import useRole from "./useRole"; // Custom hook to get user role
 import Swal from "sweetalert2";
 import EmployeeMenu from "./Employee/EmployeeMenu";
 import ManagerMenu from "./HR/ManagerMenu";
+import axiosSecure from "./AxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 
 const Navbar = () => {
   const { currentUser, logout } = useAuth();
   const { role, refetch } = useRole(); // Get the user's role
   const navigate = useNavigate();
+
+  // Get Current User Information...
+  const { data: user = {} } = useQuery({
+    queryKey: ["userInfo"],
+    queryFn: async () => {
+      const response = await axiosSecure.get(`/my-Info/${currentUser?.email}`);
+      return response.data;
+    },
+    enabled: !!currentUser?.email,
+  });
 
   const handleSignOut = () => {
     refetch();
@@ -31,9 +43,14 @@ const Navbar = () => {
       }
     });
   };
+  const renderLink = () => {
+    if (!currentUser) return "/";
+
+    return role === "manager" ? "/manager" : "/employee";
+  };
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 container mx-auto">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -80,7 +97,25 @@ const Navbar = () => {
             {role === "manager" && <ManagerMenu />}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <Link to={renderLink()}>
+          {currentUser ? (
+            <img
+              src={user?.companyLogoUrl}
+              alt="Company Logo"
+              className="h-8"
+            />
+          ) : (
+            <img
+              src="https://play-lh.googleusercontent.com/iIl4aan6RbAUAcaFAPZMMCnn7ZBkzpgkqEaVQDi-t6aiCTn8UvQ5m0SSeajkQ5fJ0A"
+              alt="XYZ Company Logo"
+              className="h-8"
+            />
+          )}
+        </Link>
+        <Link to={renderLink()} className="btn btn-ghost text-xl">
+          {currentUser ? `${user?.companyName}`:'TrackMyAssets'}
+        </Link>
+        
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
@@ -103,6 +138,21 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
+        <div>
+        <div>
+          {
+            currentUser?.email? <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar mx-4 tooltip tooltip-bottom" data-tip={user?.displayName}>
+            <div className="w-10 rounded-full">
+              <img
+                alt="User Profile Pic"
+                src={user?.photoUrl || user?.photoURL} />
+            </div>
+          </div>:""
+          }
+        </div>
+          
+        </div>
+
         {currentUser?.email ? (
           <button onClick={handleSignOut}>Logout</button>
         ) : (

@@ -5,7 +5,7 @@ const Main = () => {
   return (
     <div>
         <Navbar></Navbar>
-        <Outlet></Outlet>
+        <Outlet className="container"></Outlet>
     </div>
   )
 }

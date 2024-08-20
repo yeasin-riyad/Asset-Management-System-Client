@@ -5,38 +5,54 @@ import useAuth from '../useAuth';
 
 const RequestForAnAsset = () => {
   const [assets, setAssets] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('');
   const [assetTypeFilter, setAssetTypeFilter] = useState('');
-  const {currentUser}=useAuth()
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    const fetchAssets = async () => {
+    const fetchAssetsAndRequests = async () => {
       try {
-        const response = await axiosSecure.get('/assets', {
-          params: {
-            search: searchTerm,
-            filter:{
-              availability: availabilityFilter,
-              assetType: assetTypeFilter
+        const [assetsResponse, requestsResponse] = await Promise.all([
+          axiosSecure.get('/assets', {
+            params: {
+              search: searchTerm,
+              filter: {
+                availability: availabilityFilter,
+                assetType: assetTypeFilter
+              }
             }
-          }
-        });
-        setAssets(response.data);
+          }),
+          axiosSecure.get(`/employee-requested-assets-pending/${currentUser?.email}`)
+        ]);
+        
+        setAssets(assetsResponse.data);
+        setRequests(requestsResponse.data);
       } catch (error) {
-        console.error('Error fetching assets:', error);
+        console.error('Error fetching assets or requests:', error);
       }
     };
 
-    fetchAssets();
-  }, [searchTerm, availabilityFilter, assetTypeFilter]);
+    fetchAssetsAndRequests();
+  }, [searchTerm, availabilityFilter, assetTypeFilter, currentUser?.email]);
+
 
   const handleRequest = async (asset) => {
+    const existingRequest = requests.find(request => 
+      request.asset._id === asset._id && request.user.email === currentUser?.email && request.status === 'pending'
+    );
+
+    if (existingRequest) {
+      Swal.fire('Request Already Exists', 'You have already requested this asset and it is pending approval.', 'warning');
+      return;
+    }
+
     const { value: formValues } = await Swal.fire({
       title: 'Request Asset',
       html: `
         <div>
-        <p>Product Name: ${asset.productName}</p>
+          <p>Product Name: ${asset.productName}</p>
           <p>Available Quantity: ${asset.productQuantity}</p>
           <input id="quantity" class="swal2-input" placeholder="Quantity" type="number" min="1" max="${asset.productQuantity}">
           <textarea id="notes" class="swal2-textarea" placeholder="Additional Notes"></textarea>
@@ -52,21 +68,21 @@ const RequestForAnAsset = () => {
       cancelButtonText: 'Cancel',
       showCancelButton: true
     });
-  
+
     if (formValues) {
       const { quantity, notes } = formValues;
       if (quantity <= 0 || quantity > asset.productQuantity) {
         Swal.fire('Invalid Quantity', 'Please enter a valid quantity.', 'error');
         return;
       }
-  
+
       const requestDate = new Date();
       const user = {
-        name:currentUser?.displayName ,  
-        email:currentUser?.email  
+        name: currentUser?.displayName,
+        email: currentUser?.email
       };
-      const status = 'pending';  // Initial status for the request
-  
+      const status = 'pending';
+
       try {
         const response = await axiosSecure.post(`/request-asset`, {
           asset,
@@ -76,17 +92,17 @@ const RequestForAnAsset = () => {
           user,
           status
         });
-        
-        if(response.data.insertedId) {
+
+        if (response.data.insertedId) {
           Swal.fire('Success!', 'Your request has been submitted.', 'success');
           setAssets(assets.map(a => a._id === asset._id ? { ...a, productQuantity: a.productQuantity - quantity } : a)); // Update UI
+          setRequests([...requests, response.data]); // Update the requests state
         }
       } catch (error) {
         Swal.fire('Error!', 'Failed to submit the request.', 'error');
       }
     }
   };
-  
 
   return (
     <div className="container mx-auto p-4">

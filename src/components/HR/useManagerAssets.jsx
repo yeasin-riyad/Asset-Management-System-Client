@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axiosSecure from '../AxiosSecure';
 import useAuth from '../useAuth';
-import axiosPublic from '../AxiosPublic';
 
 const fetchManagerAssets = async (email) => {
   const { data } = await axiosSecure.get(`/manager-assets/${email}`);

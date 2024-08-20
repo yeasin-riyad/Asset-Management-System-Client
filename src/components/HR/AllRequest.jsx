@@ -24,7 +24,7 @@ const AllRequest = () => {
     {
       queryKey:['requests', searchTerm],
       queryFn: async () => {
-        const response = await axiosSecure.get(`/employee-requested-assets/${currentUser?.email}`, {
+        const response = await axiosSecure.get(`/employee-requested-assets-pending/${currentUser?.email}`, {
           params: {
             search: searchTerm,
           },
@@ -41,6 +41,7 @@ const AllRequest = () => {
   // Mutation for updating request status
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status,email }) => {
+      console.log(status)
       await axiosSecure.patch(`/update-status/${id}`, { status });
       if(status==="approved"){
         await axiosSecure.patch(`/update-user-info/${email}`,{

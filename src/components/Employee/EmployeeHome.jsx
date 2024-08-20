@@ -18,7 +18,6 @@ const EmployeeHome = () => {
       },
       enabled:!!currentUser?.email
     })
-    console.log(user)
 
   useEffect(() => {
     const fetchPendingRequests = async () => {
