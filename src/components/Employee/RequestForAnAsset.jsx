@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import axiosSecure from '../AxiosSecure';
+import useAuth from '../useAuth';
 
 const RequestForAnAsset = () => {
   const [assets, setAssets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('');
   const [assetTypeFilter, setAssetTypeFilter] = useState('');
+  const {currentUser}=useAuth()
 
   useEffect(() => {
     const fetchAssets = async () => {
@@ -14,10 +16,10 @@ const RequestForAnAsset = () => {
         const response = await axiosSecure.get('/assets', {
           params: {
             search: searchTerm,
-            filter: JSON.stringify({
+            filter:{
               availability: availabilityFilter,
               assetType: assetTypeFilter
-            })
+            }
           }
         });
         setAssets(response.data);
@@ -34,6 +36,7 @@ const RequestForAnAsset = () => {
       title: 'Request Asset',
       html: `
         <div>
+        <p>Product Name: ${asset.productName}</p>
           <p>Available Quantity: ${asset.productQuantity}</p>
           <input id="quantity" class="swal2-input" placeholder="Quantity" type="number" min="1" max="${asset.productQuantity}">
           <textarea id="notes" class="swal2-textarea" placeholder="Additional Notes"></textarea>
@@ -49,23 +52,41 @@ const RequestForAnAsset = () => {
       cancelButtonText: 'Cancel',
       showCancelButton: true
     });
-
+  
     if (formValues) {
       const { quantity, notes } = formValues;
       if (quantity <= 0 || quantity > asset.productQuantity) {
         Swal.fire('Invalid Quantity', 'Please enter a valid quantity.', 'error');
         return;
       }
-
+  
+      const requestDate = new Date();
+      const user = {
+        name:currentUser?.displayName ,  
+        email:currentUser?.email  
+      };
+      const status = 'pending';  // Initial status for the request
+  
       try {
-        await axiosSecure.post(`/request-asset/${asset._id}`, { quantity, notes });
-        Swal.fire('Success!', 'Your request has been submitted.', 'success');
-        setAssets(assets.map(a => a._id === asset._id ? { ...a, productQuantity: a.productQuantity - quantity } : a)); // Update UI
+        const response = await axiosSecure.post(`/request-asset`, {
+          asset,
+          quantity,
+          notes,
+          requestDate,
+          user,
+          status
+        });
+        
+        if(response.data.insertedId) {
+          Swal.fire('Success!', 'Your request has been submitted.', 'success');
+          setAssets(assets.map(a => a._id === asset._id ? { ...a, productQuantity: a.productQuantity - quantity } : a)); // Update UI
+        }
       } catch (error) {
         Swal.fire('Error!', 'Failed to submit the request.', 'error');
       }
     }
   };
+  
 
   return (
     <div className="container mx-auto p-4">

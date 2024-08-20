@@ -1,22 +1,32 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const EmployeeMenu = () => {
   return (
     <>
       <li>
-        <Link to="employee">Home</Link>
+        <NavLink end to="employee" activeClassName="active">
+          Home
+        </NavLink>
       </li>
       <li>
-        <Link to="employee/my-assets">My Assets</Link>
+        <NavLink to="employee/my-assets" activeClassName="active">
+          My Assets
+        </NavLink>
       </li>
       <li>
-        <Link to="employee/my-team">My Team</Link>
+        <NavLink to="employee/my-team" activeClassName="active">
+          My Team
+        </NavLink>
       </li>
       <li>
-        <Link to="employee/request-for-an-asset">Request For An Asset</Link>
+        <NavLink to="employee/request-for-an-asset" activeClassName="active">
+          Request For An Asset
+        </NavLink>
       </li>
       <li>
-        <Link to="employee/my-profile">My Profile</Link>
+        <NavLink to="employee/my-profile" activeClassName="active">
+          My Profile
+        </NavLink>
       </li>
     </>
   );

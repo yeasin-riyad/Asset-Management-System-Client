@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import useAuth from "./useAuth";
 import useRole from "./useRole"; // Custom hook to get user role
 import Swal from "sweetalert2";
@@ -7,11 +7,11 @@ import ManagerMenu from "./HR/ManagerMenu";
 
 const Navbar = () => {
   const { currentUser, logout } = useAuth();
-  const {role,refetch} = useRole(); // Get the user's role
+  const { role, refetch } = useRole(); // Get the user's role
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    refetch()
+    refetch();
     Swal.fire({
       title: "Are you sure you want to logout?",
       icon: "warning",
@@ -56,25 +56,26 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
-
-          
-{
-              !currentUser && <>
-              <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/join-hr">JoinAsHR</Link>
-            </li>
-            <li>
-              <Link to="/join-employee">JoinAsEmployee</Link>
-            </li>
-              
+            {!currentUser && (
+              <>
+                <li>
+                  <NavLink to="/" activeClassName="active">
+                    Home
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/join-hr" activeClassName="active">
+                    JoinAsHR
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/join-employee" activeClassName="active">
+                    JoinAsEmployee
+                  </NavLink>
+                </li>
               </>
-             }
+            )}
 
-         
-          
             {role === "employee" && <EmployeeMenu />}
             {role === "manager" && <ManagerMenu />}
           </ul>
@@ -83,24 +84,20 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
-        
-       
-             {
-              !currentUser && <>
+          {!currentUser && (
+            <>
               <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/join-hr">JoinAsHR</Link>
-            </li>
-            <li>
-              <Link to="/join-employee">JoinAsEmployee</Link>
-            </li>
-              
-              </>
-             }
+                <Link to="/">Home</Link>
+              </li>
+              <li>
+                <Link to="/join-hr">JoinAsHR</Link>
+              </li>
+              <li>
+                <Link to="/join-employee">JoinAsEmployee</Link>
+              </li>
+            </>
+          )}
 
-       
           {role === "employee" && <EmployeeMenu />}
           {role === "manager" && <ManagerMenu />}
         </ul>
