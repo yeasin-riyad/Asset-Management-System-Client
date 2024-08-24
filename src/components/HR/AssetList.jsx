@@ -1,7 +1,6 @@
 import { useState } from "react";
 import useManagerAssets from "./useManagerAssets";
 import Swal from "sweetalert2";
-import axios from "axios";
 import axiosSecure from "../AxiosSecure";
 
 const AssetList = () => {

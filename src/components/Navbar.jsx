@@ -21,7 +21,6 @@ const Navbar = () => {
     },
     enabled: !!currentUser?.email,
   });
-
   const handleSignOut = () => {
     refetch();
     Swal.fire({
@@ -98,7 +97,7 @@ const Navbar = () => {
           </ul>
         </div>
         <Link to={renderLink()}>
-          {currentUser ? (
+          {currentUser?.companyLogoUrl ? (
             <img
               src={user?.companyLogoUrl}
               alt="Company Logo"
@@ -113,7 +112,7 @@ const Navbar = () => {
           )}
         </Link>
         <Link to={renderLink()} className="btn btn-ghost text-xl">
-          {currentUser ? `${user?.companyName}`:'TrackMyAssets'}
+          {user?.companyName ? `${user?.companyName}`:'TrackMyAssets'}
         </Link>
         
       </div>

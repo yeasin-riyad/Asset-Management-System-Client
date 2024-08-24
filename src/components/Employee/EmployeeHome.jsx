@@ -7,7 +7,6 @@ const EmployeeHome = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [monthlyRequests, setMonthlyRequests] = useState([]);
   const { currentUser } = useAuth();
-  const [userCompany, setUserCompany] = useState(null);
 
     // Get Current User Information...
     const {data:user={}}=useQuery({
@@ -22,7 +21,7 @@ const EmployeeHome = () => {
   useEffect(() => {
     const fetchPendingRequests = async () => {
       try {
-        const response = await axiosSecure.get(`/request-asset/${currentUser.email}`, {
+        const response = await axiosSecure.get(`/request-asset/${currentUser?.email}`, {
           params: { status: 'pending' },
         });
         setPendingRequests(response.data);
@@ -33,7 +32,7 @@ const EmployeeHome = () => {
 
     const fetchMonthlyRequests = async () => {
       try {
-        const response = await axiosSecure.get(`/request-asset/${currentUser.email}`);
+        const response = await axiosSecure.get(`/request-asset/${currentUser?.email}`);
         const currentMonthRequests = response.data.filter(request => {
           const requestDate = new Date(request.requestDate);
           const currentDate = new Date();
@@ -47,19 +46,8 @@ const EmployeeHome = () => {
       }
     };
 
-    const fetchUserCompany = async () => {
-      try {
-        // Assume you have an endpoint to fetch user's company affiliation
-        const response = await axiosSecure.get(`/user-company/${currentUser.email}`);
-        setUserCompany(response.data.company);
-      } catch (error) {
-        console.error('Error fetching user company:', error);
-      }
-    };
-
     fetchPendingRequests();
     fetchMonthlyRequests();
-    fetchUserCompany();
   }, [currentUser]);
 
   if (!user?.companyName) {
@@ -108,7 +96,7 @@ const EmployeeHome = () => {
       </section>
 
       {/* Extra sections like Calendar, Events, Notices */}
-      {userCompany && <>
+      {/* {userCompany && <>
         <section>
         <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
         <p>Details about upcoming events...</p>
@@ -117,7 +105,7 @@ const EmployeeHome = () => {
       <section>
         <h2 className="text-2xl font-bold mb-4">Company Notices</h2>
         <p>Important notices from your company...</p>
-      </section></>}
+      </section></>} */}
       <section>
         {notAffiliated}
       </section>

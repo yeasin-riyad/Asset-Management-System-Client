@@ -2,20 +2,25 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import axiosSecure from '../AxiosSecure';
 import useAuth from '../useAuth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const RequestForAnAsset = () => {
   const [assets, setAssets] = useState([]);
-  const [requests, setRequests] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('');
   const [assetTypeFilter, setAssetTypeFilter] = useState('');
+  const [managerEmail,setManagerEmail]=useState(null)
   const { currentUser } = useAuth();
+  const queryClient = useQueryClient();
+
 
   useEffect(() => {
     const fetchAssetsAndRequests = async () => {
       try {
-        const [assetsResponse, requestsResponse] = await Promise.all([
-          axiosSecure.get('/assets', {
+        const [HrEmail,assetsResponse, ] = await Promise.all([
+          axiosSecure.get(`/my-hr/${currentUser?.email}`),
+
+          axiosSecure.get(`/assets/${managerEmail}`, {
             params: {
               search: searchTerm,
               filter: {
@@ -24,23 +29,70 @@ const RequestForAnAsset = () => {
               }
             }
           }),
-          axiosSecure.get(`/employee-requested-assets-pending/${currentUser?.email}`)
+
         ]);
-        
+        setManagerEmail(HrEmail?.data)
         setAssets(assetsResponse.data);
-        setRequests(requestsResponse.data);
       } catch (error) {
         console.error('Error fetching assets or requests:', error);
       }
     };
 
+
     fetchAssetsAndRequests();
-  }, [searchTerm, availabilityFilter, assetTypeFilter, currentUser?.email]);
+
+
+
+  }, [searchTerm, availabilityFilter, assetTypeFilter, currentUser?.email,managerEmail]);
+
+    // Fetch Pending Requests
+    const { data: requests = [], refetch} = useQuery({
+      queryKey: ['pendingRequests', currentUser?.email],
+      queryFn: async () => {
+        const response = await axiosSecure.get(`/employee-requested-assets-pending-requests/${currentUser?.email}`);
+        return response.data;
+      },
+      enabled: !!currentUser?.email, 
+      
+    });
+
+     // Mutation to Request an Asset
+  const requestMutation = useMutation({
+    mutationFn: async ({ asset, quantity, notes }) => {
+      const requestDate = new Date();
+      const user = {
+        name: currentUser?.displayName,
+        email: currentUser?.email,
+      };
+      const status = 'pending';
+
+      const response = await axiosSecure.post('/request-asset', {
+        asset,
+        quantity,
+        notes,
+        requestDate,
+        user,
+        status,
+      });
+
+      return response.data;
+    },
+    onSuccess: () => {
+      Swal.fire('Success!', 'Your request has been submitted.', 'success');
+      // queryClient.invalidateQueries(['assets', searchTerm, availabilityFilter, assetTypeFilter, managerEmail]);
+      queryClient.invalidateQueries(['pendingRequests', currentUser?.email]);
+    },
+    onError: () => {
+      Swal.fire('Error!', 'Failed to submit the request.', 'error');
+    },
+  });
+  
 
 
   const handleRequest = async (asset) => {
+    refetch()
     const existingRequest = requests.find(request => 
-      request.asset._id === asset._id && request.user.email === currentUser?.email && request.status === 'pending'
+      request?.asset?._id === asset?._id && request?.user.email === currentUser?.email && request?.status === 'pending'
     );
 
     if (existingRequest) {
@@ -76,31 +128,12 @@ const RequestForAnAsset = () => {
         return;
       }
 
-      const requestDate = new Date();
-      const user = {
-        name: currentUser?.displayName,
-        email: currentUser?.email
-      };
-      const status = 'pending';
+      requestMutation.mutate({ asset, quantity, notes });
 
-      try {
-        const response = await axiosSecure.post(`/request-asset`, {
-          asset,
-          quantity,
-          notes,
-          requestDate,
-          user,
-          status
-        });
 
-        if (response.data.insertedId) {
-          Swal.fire('Success!', 'Your request has been submitted.', 'success');
-          setAssets(assets.map(a => a._id === asset._id ? { ...a, productQuantity: a.productQuantity - quantity } : a)); // Update UI
-          setRequests([...requests, response.data]); // Update the requests state
-        }
-      } catch (error) {
-        Swal.fire('Error!', 'Failed to submit the request.', 'error');
-      }
+      
+
+        
     }
   };
 
