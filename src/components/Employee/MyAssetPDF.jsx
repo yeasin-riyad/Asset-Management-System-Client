@@ -39,12 +39,14 @@ const MyAssetPDF = ({ asset }) => (
         <Text style={styles.title}>Asset Details</Text>
         <Text style={styles.text}>Company Name</Text>
         <Text style={styles.text}>Address</Text>
-        <Text style={styles.text}>Contact Information</Text>
+        <Text style={styles.text}>Contact Information:{asset.asset.HREmail} </Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.title}>Asset Information</Text>
         <Text style={styles.text}>Asset Name: {asset.asset.productName}</Text>
         <Text style={styles.text}>Asset Type: {asset.asset.assetType}</Text>
+        <Text style={styles.text}>Quantity: {asset.quantity}</Text>
+
         <Text style={styles.text}>Request Date: {new Date(asset.requestDate).toLocaleDateString()}</Text>
         <Text style={styles.text}>Approval Date: {asset.status === 'approved' ? new Date(asset.approvalDate).toLocaleDateString() : 'N/A'}</Text>
         <Text style={styles.text}>Request Status: {asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}</Text>

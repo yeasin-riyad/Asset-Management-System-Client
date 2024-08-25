@@ -2,14 +2,15 @@ import { useForm } from "react-hook-form";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import Swal from "sweetalert2";
-import { useEffect } from "react";
 import useAuth from "./useAuth";
 import axiosPublic from "./AxiosPublic";
+import useRole from "./useRole";
 
-// import './ButtonSpinner.css'
 const Login = () => {
-  const {login, googleLogin,loading,currentUser}=useAuth()
-  const navigate=useNavigate()
+  const { login, googleLogin, loading } = useAuth();
+  const navigate = useNavigate();
+  const { role } = useRole(); 
+
   const {
     register,
     handleSubmit,
@@ -17,43 +18,39 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  // useEffect(()=>{
-  //   if(currentUser){
-  //     navigate('/')
-  //   }
-  // },[currentUser])
+  const onSubmit = async (data) => {
+    const { email, password } = data;
 
-  
+    try {
+      await login(email, password);
 
-  const onSubmit = async(data) => {
-    const {email,password}=data;
-  
+      
 
-    try{
-      await login(email,password)
-
-      navigate('/')
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: "You Logged In Successfully...",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
-    
-     
-    
-    }catch{
+
+      // Navigate based on the user's role
+      if (role === "employee") {
+        navigate("/employee");
+      } else if (role === "manager") {
+        navigate("/hr");
+      } else {
+        navigate("/"); // Default fallback route
+      }
+    } catch {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Your Email And Password Are Not Matching.!",
       });
-
     }
-    
-    reset()
-  
+
+    reset();
   };
 
   const handleGoogleLogin = async () => {
@@ -79,7 +76,7 @@ const Login = () => {
         timer: 1500
       });
 
-      navigate('/');
+      navigate('/employee');
     } catch {
       Swal.fire({
         icon: "error",
@@ -147,7 +144,7 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
           >
-            {loading ? "Waiting......": "Login"}
+            {loading ? "Waiting......" : "Login"}
           </button>
         </form>
 
@@ -163,9 +160,7 @@ const Login = () => {
           onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold py-2 px-4 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none"
         >
-              {loading ? "Waiting......" : <><FcGoogle className="mr-2" />Login with Google</>}
-
-          
+          {loading ? "Waiting......" : <><FcGoogle className="mr-2" />Login with Google</>}
         </button>
 
         {/* Register Links */}

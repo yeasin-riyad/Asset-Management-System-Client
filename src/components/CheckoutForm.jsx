@@ -76,7 +76,7 @@ const CheckoutForm = ({ pay }) => {
             showConfirmButton: false,
             timer: 1500,
           });
-          navigate("/");
+          navigate("/hr");
         } else {
           Swal.fire({
             icon: "error",

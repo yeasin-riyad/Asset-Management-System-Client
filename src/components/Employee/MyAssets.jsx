@@ -47,7 +47,7 @@ const MyAssets = () => {
   // Return asset mutation
   const returnAssetMutation = useMutation({
     mutationFn: async ({assetId,quantity}) => {
-      await axiosSecure.patch(`/assets/${assetId}`,{quantity});
+      await axiosSecure.patch(`/update-status/${assetId}`,{status:"returned"});
     },
     onSuccess: () => {
       Swal.fire('Returned', 'The asset has been returned.', 'success');

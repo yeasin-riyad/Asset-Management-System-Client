@@ -55,6 +55,13 @@ const AllRequest = () => {
       }
     },
     onSuccess: () => {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your request has been saved...",
+        showConfirmButton: false,
+        timer: 1500
+      });
       // Refetch the requests after a successful update
       queryClient.invalidateQueries(['requests']);
   },

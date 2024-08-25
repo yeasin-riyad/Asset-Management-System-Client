@@ -26,7 +26,7 @@ const useRole = () => {
     return { role: null, refetch };
   }
 
-  return { role, refetch };
+  return { role, refetch,isLoading };
 };
 
 export default useRole;

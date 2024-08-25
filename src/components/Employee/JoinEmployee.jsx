@@ -37,7 +37,7 @@ const JoinEmployee = () => {
           showConfirmButton: false,
           timer: 1500
         });
-        navigate('/');
+        navigate('/employee');
       }
     } catch {
       Swal.fire({
@@ -74,7 +74,7 @@ const JoinEmployee = () => {
         timer: 1500
       });
 
-      navigate('/');
+      navigate('/employee');
     } catch {
       Swal.fire({
         icon: "error",

@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 const EmployeeHome = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [monthlyRequests, setMonthlyRequests] = useState([]);
+  const [returnedItems,setReturnedItems]=useState([])
   const { currentUser } = useAuth();
 
     // Get Current User Information...
@@ -45,10 +46,23 @@ const EmployeeHome = () => {
         console.error('Error fetching monthly requests:', error);
       }
     };
+    const fetchReturnedItems = async () => {
+      try {
+        const response = await axiosSecure.get(`/request-asset/${currentUser?.email}`, {
+          params: { status: 'returned' },
+        });
+        setReturnedItems(response.data);
+      } catch (error) {
+        console.error('Error fetching Returned Items:', error);
+      }
+    };
 
     fetchPendingRequests();
     fetchMonthlyRequests();
+    fetchReturnedItems();
+    
   }, [currentUser]);
+
 
   if (!user?.companyName) {
   
@@ -92,6 +106,25 @@ const EmployeeHome = () => {
           </ul>
         ) : (
           <p>No requests made this month...</p>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-bold mb-4">My Returned Items</h2>
+        {returnedItems.length > 0 ? (
+          <ul className="space-y-4">
+            {returnedItems.map((request) => (
+              <li key={request._id} className="p-4 border rounded-md shadow-md dark:bg-gray-800 dark:text-white">
+                <p><strong>Asset Name:</strong> {request.asset.productName}</p>
+                <p><strong>Quantity:</strong> {request.quantity}</p>
+                <p><strong>Returned Date:</strong> {new Date(request.returnedDate).toLocaleDateString()}</p>
+
+                <p><strong>Status:</strong> {request.status}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No Returned Items.....</p>
         )}
       </section>
 

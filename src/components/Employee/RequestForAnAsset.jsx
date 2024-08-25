@@ -18,9 +18,9 @@ const RequestForAnAsset = () => {
     const fetchAssetsAndRequests = async () => {
       try {
         const [HrEmail,assetsResponse, ] = await Promise.all([
-          axiosSecure.get(`/my-hr/${currentUser?.email}`),
+          await axiosSecure.get(`/my-hr/${currentUser?.email}`),
 
-          axiosSecure.get(`/assets/${managerEmail}`, {
+         await axiosSecure.get(`/assets/${managerEmail}`, {
             params: {
               search: searchTerm,
               filter: {
