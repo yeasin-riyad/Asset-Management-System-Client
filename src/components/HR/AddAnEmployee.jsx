@@ -11,29 +11,23 @@ const AddAnEmployee = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   // Fetch unaffiliated users, affiliated count, and package limit
-  const { data, isLoading, error } = useQuery(
-    {
-      queryKey:['unaffiliatedUsers', currentUser?.email],
-      queryFn: async () => {
-        const { data } = await axiosSecure.get(`/unaffiliated-users/${currentUser?.email}`);
-        return data;
-      }
-
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['unaffiliatedUsers', currentUser?.email],
+    queryFn: async () => {
+      const { data } = await axiosSecure.get(`/unaffiliated-users/${currentUser?.email}`);
+      return data;
     }
-   
-  );
+  });
+
 
   // Fetch HR's information
   const { data: hrInfo } = useQuery({
-    queryKey:    ['myInfo', currentUser?.email],
-    queryFn:   async () => {
+    queryKey: ['myInfo', currentUser?.email],
+    queryFn: async () => {
       const { data } = await axiosSecure.get(`/my-Info/${currentUser?.email}`);
       return data;
     }
-
-  }
- 
-  );
+  });
 
   const addToTeamMutation = useMutation({
     mutationFn: async (userId) => {
@@ -47,7 +41,7 @@ const AddAnEmployee = () => {
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "User has been Added in your Team",
+        title: "User has been added to your team",
         showConfirmButton: false,
         timer: 1500
       });
@@ -59,7 +53,20 @@ const AddAnEmployee = () => {
   };
 
   const handleAddToTeam = () => {
-    if (selectedUser) {
+    const { affiliatedCount, packageLimit } = data;
+
+    if (affiliatedCount >= packageLimit) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Limit Exceeded',
+        text: 'You have reached the maximum number of affiliated members allowed by your package.',
+        confirmButtonText: 'Upgrade Package',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = `/packages?packageLimit=${packageLimit}`;
+        }
+      });
+    } else if (selectedUser) {
       addToTeamMutation.mutate(selectedUser);
     }
   };
@@ -67,7 +74,7 @@ const AddAnEmployee = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data</p>;
 
-  const { unaffiliatedUsers, affiliatedCount, packageLimit } = data;
+  const { unaffiliatedUsers } = data;
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
@@ -76,10 +83,10 @@ const AddAnEmployee = () => {
       {/* Package Section */}
       <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-8">
         <h2 className="text-lg font-semibold mb-2">Package Details</h2>
-        <p>Affiliated Members: {affiliatedCount} / {packageLimit}</p>
+        <p>Affiliated Members: {data.affiliatedCount} / {data.packageLimit}</p>
         <button
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
-          onClick={() => window.location.href = `/packages?packageLimit=${packageLimit}`}
+          onClick={() => window.location.href = `/packages?packageLimit=${data.packageLimit}`}
         >
           Increase Limit
         </button>

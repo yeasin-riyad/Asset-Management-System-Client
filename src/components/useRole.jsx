@@ -13,13 +13,9 @@ const useRole = () => {
   const { data: role, isLoading, error, refetch } = useQuery({
     queryKey: ['userRole', currentUser?.email],
     enabled: !!currentUser?.email,
-    queryFn: () => fetchUserRole(currentUser.email),
+    queryFn: () => fetchUserRole(currentUser?.email),
     staleTime: 5 * 60 * 1000,
   });
-
-  if (isLoading) {
-    return { role: 'loading', refetch };
-  }
 
   if (error) {
     console.error('Failed to fetch user role:', error);

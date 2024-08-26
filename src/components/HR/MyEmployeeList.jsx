@@ -80,7 +80,7 @@ const MyEmployeeList = () => {
           {employees.map((employee) => (
             <div key={employee._id} className="group p-6 border rounded-lg shadow-lg bg-white dark:bg-gray-800 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
               <img
-                src={employee.image || "/default-avatar.png"}
+                src={employee.photoUrl || "/default-avatar.png"}
                 alt={employee.name}
                 className="w-20 h-20 rounded-full mb-4 mx-auto group-hover:scale-110 transition-transform duration-300"
               />

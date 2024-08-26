@@ -19,28 +19,35 @@ import AllRequest from "./components/HR/AllRequest";
 import MyEmployeeList from "./components/HR/MyEmployeeList";
 import AddAnEmployee from "./components/HR/AddAnEmployee";
 import HrProfile from "./components/HR/HrProfile";
+import EmployeePrivate from "./components/Employee/EmpoyeePrivate";
+import ManagerPrivate from "./components/HR/ManagerPrivate";
+import ErrorPage from "./ErrorPage";
+import NonUserPrivate from "./components/NoLogged/NonUserPrivate";
+import CheckPayment from "./components/HR/CheckPayment";
 const router = createBrowserRouter([
 
     {
         path:"/",
         element:<Main></Main>,
+        errorElement:<ErrorPage></ErrorPage>,
         children:[
             {
                 index:true,
-                element:<Home/>
+                element:<NonUserPrivate><Home/></NonUserPrivate>
             },
             {
                 path:'join-hr',
-                element:<JoinAsHR/>
+                element:<NonUserPrivate><JoinAsHR/></NonUserPrivate>
             },
             {
                 path:'join-employee',
-                element:<JoinEmployee/>
+                element:<NonUserPrivate><JoinEmployee/></NonUserPrivate>
             },
             {
                 path:'packages',
                 element:<Packages/>
             },
+         
 
             {
                 path:'employee',
@@ -48,25 +55,25 @@ const router = createBrowserRouter([
                 children:[
                     {
                         index:true,
-                        element:<EmployeeHome/>,
+                        element:<EmployeePrivate><EmployeeHome/></EmployeePrivate>,
             
                     },
                     {
                         path:'my-assets',
-                        element:<MyAssets/>
+                        element:<EmployeePrivate><MyAssets/></EmployeePrivate>
 
                     },
                     {
                         path:'my-team',
-                        element:<MyTeam/>
+                        element:<EmployeePrivate><MyTeam/></EmployeePrivate>
                     },
                     {
                         path:'request-for-an-asset',
-                        element:<RequestForAnAsset/>
+                        element:<EmployeePrivate><RequestForAnAsset/></EmployeePrivate>
                     },
                     {
                         path:'my-profile',
-                        element:<EmployeeProfile/>
+                        element:<EmployeePrivate><EmployeeProfile/></EmployeePrivate>
                     }
                 ]
             },
@@ -76,32 +83,33 @@ const router = createBrowserRouter([
                 children:[
                     {
                         index:true,
-                        element:<HrHome></HrHome>
+                        element:<ManagerPrivate><CheckPayment><HrHome></HrHome></CheckPayment></ManagerPrivate>
                     },
                     {
                         path:'asset-list',
-                        element:<AssetList></AssetList>
+                        element:<ManagerPrivate><AssetList></AssetList></ManagerPrivate>
                     },
                     {
                         path:'add-an-asset',
-                        element:<AddAnAsset></AddAnAsset>
+                        element:<ManagerPrivate><AddAnAsset></AddAnAsset></ManagerPrivate>
                     },
                     {
                         path:'all-request',
-                        element:<AllRequest></AllRequest>
+                        element:<ManagerPrivate><CheckPayment><AllRequest></AllRequest></CheckPayment></ManagerPrivate>
                     },
                     {
                         path:'my-employee-list',
-                        element:<MyEmployeeList></MyEmployeeList>
+                        element:<ManagerPrivate><CheckPayment><MyEmployeeList></MyEmployeeList></CheckPayment></ManagerPrivate>
                     },
                     {
                         path:'add-an-employee',
-                        element:<AddAnEmployee></AddAnEmployee>
+                        element:<ManagerPrivate><CheckPayment><AddAnEmployee></AddAnEmployee></CheckPayment></ManagerPrivate>
                     },
                     {
                         path:'hr-profile',
-                        element:<HrProfile></HrProfile>
-                    }
+                        element:<ManagerPrivate><HrProfile></HrProfile></ManagerPrivate>
+                    },
+                   
 
                 ]
             }
