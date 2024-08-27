@@ -2,6 +2,7 @@ import { FaUserAlt, FaUserFriends, FaUsers } from 'react-icons/fa';
 import PayMentModal from '../PaymentModal';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import Title from '../Helmet';
 
 const Packages = () => {
   const [open, setOpen] = useState(false);
@@ -20,6 +21,8 @@ const Packages = () => {
 
   return (
     <section className="py-12">
+            <Title title={"Manager || Packages"}></Title>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-gray-300 sm:text-4xl">Our Packages</h2>

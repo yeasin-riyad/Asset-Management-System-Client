@@ -4,6 +4,7 @@ import axiosSecure from '../AxiosSecure';
 import { FaUserPlus } from 'react-icons/fa';
 import useAuth from '../useAuth';
 import Swal from 'sweetalert2';
+import Title from '../Helmet';
 
 const AddAnEmployee = () => {
   const { currentUser } = useAuth();
@@ -78,6 +79,8 @@ const AddAnEmployee = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
+            <Title title={"Manager || Add-Employee"}></Title>
+
       <h1 className="text-2xl font-bold mb-4">Employee Page</h1>
 
       {/* Package Section */}

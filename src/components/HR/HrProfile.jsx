@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import axiosSecure from '../AxiosSecure';
 import useAuth from '../useAuth';
+import Title from '../Helmet';
 
 const HrProfile = () => {
   const [user, setUser] = useState(null);
@@ -46,6 +47,8 @@ const HrProfile = () => {
 
   return (
     <div className="container mx-auto p-4">
+            <Title title={"Manager || Profile"}></Title>
+
       <h2 className="text-2xl mb-4">Update Profile</h2>
       <form onSubmit={handleUpdate} className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-white">
         <div className="mb-4">

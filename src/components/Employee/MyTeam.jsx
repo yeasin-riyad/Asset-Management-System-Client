@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaUserShield, FaUser } from 'react-icons/fa'; // Icons for admin and normal employee
 import useAuth from '../useAuth';
 import axiosSecure from '../AxiosSecure';
+import Title from '../Helmet';
 
 const MyTeam = () => {
   const [team, setTeam] = useState([]);
@@ -46,6 +47,8 @@ const MyTeam = () => {
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
+                  <Title title={"Employee || Team"}></Title>
+
       <h1 className="text-2xl font-bold mb-4">My Team</h1>
       
       {team.length === 0 ? (

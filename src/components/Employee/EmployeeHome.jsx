@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import useAuth from '../useAuth';
 import axiosSecure from '../AxiosSecure';
 import { useQuery } from '@tanstack/react-query';
+import Title from '../Helmet';
 
 const EmployeeHome = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
@@ -74,6 +75,8 @@ const EmployeeHome = () => {
 
   return (
     <div className="container mx-auto p-4 space-y-8">
+            <Title title={"Employee || Home"}></Title>
+
       <section>
         <h2 className="text-2xl font-bold mb-4">My Pending Requests</h2>
         {pendingRequests.length > 0 ? (

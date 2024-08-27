@@ -6,6 +6,8 @@ import EmployeeMenu from "./Employee/EmployeeMenu";
 import ManagerMenu from "./HR/ManagerMenu";
 import axiosSecure from "./AxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import Headroom from 'react-headroom';
+
 
 const Navbar = () => {
   const { currentUser, logout } = useAuth();
@@ -45,11 +47,12 @@ const Navbar = () => {
   const renderLink = () => {
     if (!currentUser) return "/";
 
-    return role === "manager" ? "/manager" : "/employee";
+    return role === "manager" ? "/hr" : "/employee";
   };
 
   return (
-    <div className="navbar bg-base-100 container mx-auto">
+    <Headroom>
+      <div className="navbar bg-base-100 container mx-auto">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -97,7 +100,7 @@ const Navbar = () => {
           </ul>
         </div>
         <Link to={renderLink()}>
-          {currentUser?.companyLogoUrl ? (
+          {user?.companyLogoUrl ? (
             <img
               src={user?.companyLogoUrl}
               alt="Company Logo"
@@ -159,6 +162,7 @@ const Navbar = () => {
         )}
       </div>
     </div>
+    </Headroom>
   );
 };
 

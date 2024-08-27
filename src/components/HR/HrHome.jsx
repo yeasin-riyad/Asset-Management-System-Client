@@ -5,12 +5,14 @@ import ReturnableNonReturnablePieChart from "./ReturnableNonReturnablePieChart";
 import useAuth from "../useAuth";
 import RecentApprovals from "./RecentApprovals";
 import AssetRequestHistory from "./AssetRequestHistory";
+import Title from "../Helmet";
 
 const HrHome = () => {
   const {currentUser}=useAuth()
   const email=currentUser?.email;
   return (
     <div className="container mx-auto p-4">
+      <Title title={"Manager || Home"}></Title>
       <h1 className="text-3xl text-center font-semibold text-gray-800 dark:text-gray-100 mb-4">HR Manager Dashboard</h1>
       <PendingRequests email={email} />
       <TopRequestedItems email={email} />

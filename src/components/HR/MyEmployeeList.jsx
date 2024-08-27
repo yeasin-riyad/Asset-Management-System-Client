@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../AxiosSecure";
 import Swal from "sweetalert2";
 import useAuth from "../useAuth";
+import Title from "../Helmet";
 
 const MyEmployeeList = () => {
   const queryClient = useQueryClient();
@@ -66,6 +67,8 @@ const MyEmployeeList = () => {
 
   return (
     <div className="container mx-auto p-4">
+            <Title title={"Manager || Employee-List"}></Title>
+
       <h2 className="text-3xl font-extrabold text-center mb-6 text-gray-800 dark:text-white">
         Team Members
       </h2>

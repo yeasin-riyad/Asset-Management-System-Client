@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../AxiosSecure";
 import useAuth from "../useAuth";
+import Title from "../Helmet";
 
 const AllRequest = () => {
   const { currentUser } = useAuth();
@@ -116,6 +117,8 @@ const AllRequest = () => {
   return (
     <div className="container mx-auto p-4">
       {/* Search Section */}
+      <Title title={"Manager || All-Request"}></Title>
+
       <div className="mb-4">
         <input
           type="text"

@@ -2,6 +2,7 @@ import { useState } from "react";
 import Swal from 'sweetalert2';
 import axiosSecure from "../AxiosSecure";
 import useAuth from "../useAuth";
+import Title from "../Helmet";
 
 const AddAnAsset = () => {
   const [productName, setProductName] = useState("");
@@ -40,6 +41,7 @@ const AddAnAsset = () => {
 
   return (
     <div className="container mx-auto p-6">
+      <Title title={"Manager || Add-Asset"}></Title>
       <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-white">
         <h2 className="text-2xl font-bold mb-4">Add New Asset</h2>
         <form onSubmit={handleSubmit}>

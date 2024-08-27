@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import axiosSecure from '../AxiosSecure';
 import useAuth from '../useAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Title from '../Helmet';
 
 const RequestForAnAsset = () => {
   const [assets, setAssets] = useState([]);
@@ -139,6 +140,8 @@ const RequestForAnAsset = () => {
 
   return (
     <div className="container mx-auto p-4">
+                  <Title title={"Employee || Request-An-Asset"}></Title>
+
       {/* Search Section */}
       <div className="mb-4">
         <input

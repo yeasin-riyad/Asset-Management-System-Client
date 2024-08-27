@@ -7,6 +7,7 @@ import useAuth from '../useAuth';
 import imgHosting from '../ImgHosting';
 import axiosPublic from '../AxiosPublic';
 import { FcGoogle } from 'react-icons/fc';
+import Title from '../Helmet';
 
 const JoinEmployee = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -86,6 +87,8 @@ const JoinEmployee = () => {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg mt-7">
+                  <Title title={"Employee || Register"}></Title>
+
       <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Register New Employee</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Full Name */}

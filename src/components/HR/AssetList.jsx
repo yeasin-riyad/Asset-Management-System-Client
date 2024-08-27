@@ -2,6 +2,7 @@ import { useState } from "react";
 import useManagerAssets from "./useManagerAssets";
 import Swal from "sweetalert2";
 import axiosSecure from "../AxiosSecure";
+import Title from "../Helmet";
 
 const AssetList = () => {
   const { data: assets, isLoading, error, refetch } = useManagerAssets();
@@ -105,6 +106,8 @@ const AssetList = () => {
 
   return (
     <div className="container mx-auto p-4">
+            <Title title={"Manager || Asset-List"}></Title>
+
       {/* Search Section */}
       <div className="mb-4">
         <input

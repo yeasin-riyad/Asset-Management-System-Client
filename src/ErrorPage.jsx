@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import useAuth from "./components/useAuth";
 import useRole from "./components/useRole";
+import Title from "./components/Helmet";
 
 
 const ErrorPage = () => {
@@ -31,6 +32,8 @@ const ErrorPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+              <Title title={"Error"}></Title>
+
       <div className="text-center">
         <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-4">
           404

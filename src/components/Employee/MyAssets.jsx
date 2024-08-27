@@ -5,6 +5,7 @@ import axiosSecure from '../AxiosSecure';
 import useAuth from '../useAuth';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import MyAssetPDF from './MyAssetPDF';
+import Title from '../Helmet';
 
 const MyAssets = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,7 +47,7 @@ const MyAssets = () => {
 
   // Return asset mutation
   const returnAssetMutation = useMutation({
-    mutationFn: async ({assetId,quantity}) => {
+    mutationFn: async ({assetId}) => {
       await axiosSecure.patch(`/update-status/${assetId}`,{status:"returned"});
     },
     onSuccess: () => {
@@ -92,6 +93,8 @@ const MyAssets = () => {
 
   return (
     <div className="container mx-auto p-4">
+                  <Title title={"Employee || Assets"}></Title>
+
       {/* Search Section */}
       <div className="mb-4">
         <input

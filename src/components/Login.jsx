@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import useAuth from "./useAuth";
 import axiosPublic from "./AxiosPublic";
 import useRole from "./useRole";
+import Title from "./Helmet";
 
 const Login = () => {
   const { login, googleLogin, loading } = useAuth();
@@ -88,6 +89,8 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+            <Title title={"Login"}></Title>
+
       <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
           Login

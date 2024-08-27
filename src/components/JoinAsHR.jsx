@@ -9,6 +9,7 @@ import { ImSpinner3 } from "react-icons/im";
 import imgHosting from "./ImgHosting";
 import axiosPublic from "./AxiosPublic";
 import useAuth from "./useAuth";
+import Title from "./Helmet";
 
 
 
@@ -88,6 +89,8 @@ const JoinAsHR = () => {
   
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
+              <Title title={"Manager || Registration"}></Title>
+
         <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
             Register New HR Manager

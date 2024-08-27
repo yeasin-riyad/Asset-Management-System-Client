@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import useAuth from '../useAuth';
 import axiosSecure from '../AxiosSecure';
+import Title from '../Helmet';
 
 
 const EmployeeProfile = () => {
@@ -47,6 +48,8 @@ const EmployeeProfile = () => {
 
   return (
     <div className="container mx-auto p-4">
+     <Title title={"Employee || Profile"}></Title>
+
       <h2 className="text-2xl mb-4">Update Profile</h2>
       <form onSubmit={handleUpdate} className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-white">
         <div className="mb-4">
@@ -78,6 +81,7 @@ const EmployeeProfile = () => {
       {/* Update Confirmation Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+
           <div className="bg-white p-6 rounded-lg shadow-lg dark:bg-gray-800 dark:text-white">
             <h2 className="text-2xl mb-4">Confirm Update</h2>
             <p className="mb-4">Are you sure you want to update your profile?</p>
