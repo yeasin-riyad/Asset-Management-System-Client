@@ -13,7 +13,9 @@ import CheckoutForm from "./CheckoutForm";
 
 
 
-  const stripePromise =await loadStripe(import.meta.env.VITE_STRIPE_KEY)
+  const loadStripePromise = async () => {
+    return await loadStripe(import.meta.env.VITE_STRIPE_KEY)
+    }  
 
   const PayMentModal = ({ open,pay }) => {
     let [isOpen, setIsOpen] = useState(false);
@@ -53,7 +55,7 @@ import CheckoutForm from "./CheckoutForm";
                       Pay First 
                     </DialogTitle>
                     <div className="mt-2 text-sm/6 text-white/50">
-                      <Elements stripe={stripePromise}>
+                      <Elements stripe={loadStripePromise()}>
                         <CheckoutForm pay={pay}/>
                       </Elements>
                     </div>
