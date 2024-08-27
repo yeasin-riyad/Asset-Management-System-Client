@@ -6,11 +6,12 @@ import useAuth from "./useAuth";
 import axiosPublic from "./AxiosPublic";
 import useRole from "./useRole";
 import Title from "./Helmet";
+import { useEffect } from "react";
 
 const Login = () => {
   const { login, googleLogin, loading } = useAuth();
   const navigate = useNavigate();
-  const { role } = useRole(); 
+  const { role, isLoading: roleLoading, refetch: refetchRole } = useRole();
 
   const {
     register,
@@ -25,8 +26,6 @@ const Login = () => {
     try {
       await login(email, password);
 
-      
-
       Swal.fire({
         position: "top-end",
         icon: "success",
@@ -35,14 +34,8 @@ const Login = () => {
         timer: 1500,
       });
 
-      // Navigate based on the user's role
-      if (role === "employee") {
-        navigate("/employee");
-      } else if (role === "manager") {
-        navigate("/hr");
-      } else {
-        navigate("/"); // Default fallback route
-      }
+      // Refetch role after login to ensure it's updated
+      refetchRole();
     } catch {
       Swal.fire({
         icon: "error",
@@ -67,17 +60,18 @@ const Login = () => {
       };
 
       // Save the user in the database
-      const { data } = await axiosPublic.post('/saveUser', { user: newUser });
+      await axiosPublic.post('/saveUser', { user: newUser });
 
       Swal.fire({
         position: "top-end",
         icon: "success",
         title: "You Logged In Successfully...",
         showConfirmButton: false,
-        timer: 1500
+        timer: 1500,
       });
 
-      navigate('/employee');
+      // Refetch role after Google login
+      refetchRole();
     } catch {
       Swal.fire({
         icon: "error",
@@ -87,10 +81,26 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    // Navigate only when role is loaded and the user is not currently logging in
+    if (!roleLoading && role && !loading) {
+      if (role === "employee") {
+        navigate("/employee");
+      } else if (role === "manager") {
+        navigate("/hr");
+      } else {
+        navigate("/admin");
+      }
+    }
+  }, [role, roleLoading, navigate, loading]);
+
+  if (loading || roleLoading) {
+    return <div>Loading........</div>;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
-            <Title title={"Login"}></Title>
-
+      <Title title={"Login"}></Title>
       <div className="max-w-md w-full bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
           Login

@@ -8,7 +8,6 @@ import axiosSecure from "./AxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Headroom from 'react-headroom';
 
-
 const Navbar = () => {
   const { currentUser, logout } = useAuth();
   const { role, refetch } = useRole(); // Get the user's role
@@ -46,12 +45,12 @@ const Navbar = () => {
   };
   const renderLink = () => {
     if (!currentUser) return "/";
-
-    return role === "manager" ? "/hr" : "/employee";
+  
+    return role === "manager" ? "/hr" :"/employee";
   };
 
   return (
-    <Headroom>
+    <Headroom className="z-50">
       <div className="navbar bg-base-100 container mx-auto">
       <div className="navbar-start">
         <div className="dropdown">

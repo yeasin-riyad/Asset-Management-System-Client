@@ -24,6 +24,10 @@ import ManagerPrivate from "./components/HR/ManagerPrivate";
 import ErrorPage from "./ErrorPage";
 import NonUserPrivate from "./components/NoLogged/NonUserPrivate";
 import CheckPayment from "./components/HR/CheckPayment";
+import AdminMain from "./AdminMain";
+import Admin from "./Admin";
+import AdminPrivate from "./AdminPrivate";
+import ManagerBlockedMessage from "./components/HR/ManagerBlockedMessage";
 const router = createBrowserRouter([
 
     {
@@ -47,6 +51,7 @@ const router = createBrowserRouter([
                 path:'packages',
                 element:<Packages/>
             },
+          
          
 
             {
@@ -109,8 +114,22 @@ const router = createBrowserRouter([
                         path:'hr-profile',
                         element:<ManagerPrivate><HrProfile></HrProfile></ManagerPrivate>
                     },
+
+                    {path:'manager-block',
+                        element:<ManagerBlockedMessage></ManagerBlockedMessage>
+                    }
                    
 
+                ]
+            },
+            {
+                path:'admin',
+                element:<AdminMain></AdminMain>,
+                children:[
+                    {
+                        index:true,
+                        element:<AdminPrivate><Admin></Admin></AdminPrivate>
+                    }
                 ]
             }
             
@@ -122,7 +141,8 @@ const router = createBrowserRouter([
     {
         path:'/login',
         element:<Login></Login>
-    }
+    },
+    
 
 ])
 
