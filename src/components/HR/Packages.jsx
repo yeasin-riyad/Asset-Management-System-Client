@@ -12,7 +12,6 @@ const Packages = () => {
   const queryParams = new URLSearchParams(location.search);
   const packageLimit = parseInt(queryParams.get('packageLimit'), 10); // Ensure packageLimit is a number
 
-  console.log('Package Limit:', packageLimit);
 
   const handleChoosePlan = (amount) => {
     setPay(amount);

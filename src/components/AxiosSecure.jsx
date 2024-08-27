@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosSecure = axios.create({
-  baseURL: 'http://localhost:9000',
+  baseURL: 'https://server-assets.vercel.app',
 });
 
 // Add a request interceptor to include the latest token
@@ -11,7 +11,6 @@ axiosSecure.interceptors.request.use(
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log("Token used in request:", token);
     }
     return config;
   },

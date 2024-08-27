@@ -16,8 +16,7 @@ import Title from "./Helmet";
 const JoinAsHR = () => {
 
    const navigate=useNavigate()
-    // const { data, isLoading ,refetch} = VerifyUserRole();
-    // console.log(data);
+
     const{signUp,updateUser}=useAuth()
     const {
       register,

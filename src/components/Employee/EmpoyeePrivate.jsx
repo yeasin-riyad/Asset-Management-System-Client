@@ -6,7 +6,6 @@ const EmployeePrivate = ({ children }) => {
   const { currentUser, loading: authLoading } = useAuth();
   const { role, isLoading: roleLoading } = useRole();
 
-console.log(authLoading,roleLoading)
 
   if (authLoading || roleLoading) {
     return <div>Loading...</div>;
