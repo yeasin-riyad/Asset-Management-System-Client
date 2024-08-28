@@ -1,63 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import axiosSecure from '../AxiosSecure';
 import useAuth from '../useAuth';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Title from '../Helmet';
+import Spinner from './Spinner';
 
 const RequestForAnAsset = () => {
-  const [assets, setAssets] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [availabilityFilter, setAvailabilityFilter] = useState('');
   const [assetTypeFilter, setAssetTypeFilter] = useState('');
-  const [managerEmail,setManagerEmail]=useState(null)
   const { currentUser } = useAuth();
   const queryClient = useQueryClient();
 
+  // Fetch Manager Email
+  const { data: managerEmail } = useQuery({
+    queryKey: ['managerEmail', currentUser?.email],
+    queryFn: async () => {
+      const response = await axiosSecure.get(`/my-hr/${currentUser?.email}`);
+      return response.data;
+    },
+    enabled: !!currentUser?.email,
+  });
 
-  useEffect(() => {
-    const fetchAssetsAndRequests = async () => {
-      try {
-        const [HrEmail,assetsResponse, ] = await Promise.all([
-          await axiosSecure.get(`/my-hr/${currentUser?.email}`),
+  // Fetch Assets
+  const { data: assets = [], isLoading } = useQuery({
+    queryKey: ['assets', searchTerm, availabilityFilter, assetTypeFilter, managerEmail],
+    queryFn: async () => {
+      const response = await axiosSecure.get(`/assets/${managerEmail}`, {
+        params: {
+          search: searchTerm,
+          filter: {
+            availability: availabilityFilter,
+            assetType: assetTypeFilter,
+          },
+        },
+      });
+      return response.data;
+    },
+    enabled: !!managerEmail,
+  });
 
-         await axiosSecure.get(`/assets/${managerEmail}`, {
-            params: {
-              search: searchTerm,
-              filter: {
-                availability: availabilityFilter,
-                assetType: assetTypeFilter
-              }
-            }
-          }),
+  // Fetch Pending Requests
+  const { data: requests = [], refetch } = useQuery({
+    queryKey: ['pendingRequests', currentUser?.email],
+    queryFn: async () => {
+      const response = await axiosSecure.get(`/employee-requested-assets-pending-requests/${currentUser?.email}`);
+      return response.data;
+    },
+    enabled: !!currentUser?.email,
+  });
 
-        ]);
-        setManagerEmail(HrEmail?.data)
-        setAssets(assetsResponse.data);
-      } catch (error) {
-        console.error('Error fetching assets or requests:', error);
-      }
-    };
-
-
-    fetchAssetsAndRequests();
-
-
-
-  }, [searchTerm, availabilityFilter, assetTypeFilter, currentUser?.email,managerEmail]);
-
-    // Fetch Pending Requests
-    const { data: requests = [], refetch} = useQuery({
-      queryKey: ['pendingRequests', currentUser?.email],
-      queryFn: async () => {
-        const response = await axiosSecure.get(`/employee-requested-assets-pending-requests/${currentUser?.email}`);
-        return response.data;
-      },
-      enabled: !!currentUser?.email, 
-      
-    });
-
-     // Mutation to Request an Asset
+  // Mutation to Request an Asset
   const requestMutation = useMutation({
     mutationFn: async ({ asset, quantity, notes }) => {
       const requestDate = new Date();
@@ -80,20 +74,17 @@ const RequestForAnAsset = () => {
     },
     onSuccess: () => {
       Swal.fire('Success!', 'Your request has been submitted.', 'success');
-      // queryClient.invalidateQueries(['assets', searchTerm, availabilityFilter, assetTypeFilter, managerEmail]);
       queryClient.invalidateQueries(['pendingRequests', currentUser?.email]);
     },
     onError: () => {
       Swal.fire('Error!', 'Failed to submit the request.', 'error');
     },
   });
-  
-
 
   const handleRequest = async (asset) => {
-    refetch()
-    const existingRequest = requests.find(request => 
-      request?.asset?._id === asset?._id && request?.user.email === currentUser?.email && request?.status === 'pending'
+    refetch();
+    const existingRequest = requests.find(
+      (request) => request?.asset?._id === asset?._id && request?.user.email === currentUser?.email && request?.status === 'pending'
     );
 
     if (existingRequest) {
@@ -119,7 +110,7 @@ const RequestForAnAsset = () => {
       },
       confirmButtonText: 'Request',
       cancelButtonText: 'Cancel',
-      showCancelButton: true
+      showCancelButton: true,
     });
 
     if (formValues) {
@@ -130,17 +121,12 @@ const RequestForAnAsset = () => {
       }
 
       requestMutation.mutate({ asset, quantity, notes });
-
-
-      
-
-        
     }
   };
 
   return (
     <div className="container mx-auto p-4">
-                  <Title title={"Employee || Request-An-Asset"}></Title>
+      <Title title="Employee || Request-An-Asset" />
 
       {/* Search Section */}
       <div className="mb-4">
@@ -182,29 +168,35 @@ const RequestForAnAsset = () => {
         </div>
       </div>
 
-      {/* Assets List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {assets.length === 0 ? (
-          <div className="p-4 text-center bg-yellow-100 border border-yellow-400 text-yellow-800 rounded-md dark:bg-yellow-900 dark:border-yellow-800 dark:text-yellow-300">
-            No assets found. Please adjust your search or filters.
-          </div>
-        ) : (
-          assets.map((asset) => (
-            <div key={asset._id} className="p-4 border rounded-md shadow-md dark:bg-gray-800 dark:text-white">
-              <h3 className="text-xl font-bold">{asset.productName}</h3>
-              <p>Type: {asset.assetType}</p>
-              <p>Availability: {asset.productQuantity > 0 ? 'Available' : 'Out of stock'}</p>
-              <button
-                className={`p-2 mt-4 ${asset.productQuantity > 0 ? 'bg-blue-500' : 'bg-gray-500'} text-white rounded-md hover:bg-blue-600`}
-                onClick={() => asset.productQuantity > 0 && handleRequest(asset)}
-                disabled={asset.productQuantity <= 0}
-              >
-                Request
-              </button>
+      {/* Loading Spinner */}
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <Spinner></Spinner>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {assets.length === 0 ? (
+            <div className="p-4 text-center bg-yellow-100 border border-yellow-400 text-yellow-800 rounded-md dark:bg-yellow-900 dark:border-yellow-800 dark:text-yellow-300">
+              No assets found. Please adjust your search or filters.
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            assets.map((asset) => (
+              <div key={asset._id} className="p-4 border rounded-md shadow-md dark:bg-gray-800 dark:text-white">
+                <h3 className="text-xl font-bold">{asset.productName}</h3>
+                <p>Type: {asset.assetType}</p>
+                <p>Availability: {asset.productQuantity > 0 ? 'Available' : 'Out of stock'}</p>
+                <button
+                  className={`p-2 mt-4 ${asset.productQuantity > 0 ? 'bg-blue-500' : 'bg-gray-500'} text-white rounded-md hover:bg-blue-600`}
+                  onClick={() => asset.productQuantity > 0 && handleRequest(asset)}
+                  disabled={asset.productQuantity <= 0}
+                >
+                  Request
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 };
