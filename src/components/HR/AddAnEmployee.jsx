@@ -20,6 +20,14 @@ const AddAnEmployee = () => {
     }
   });
 
+  // Get Payment Info
+  const { data: payment } = useQuery({
+    queryKey: ['paymentInfo', currentUser?.email],
+    queryFn: async () => {
+      const { data } = await axiosSecure.get(`/Payment_Collection/${currentUser?.email}`);
+      return data;
+    }
+  });
 
   // Fetch HR's information
   const { data: hrInfo } = useQuery({
@@ -33,7 +41,7 @@ const AddAnEmployee = () => {
   const addToTeamMutation = useMutation({
     mutationFn: async (userId) => {
       const { email, companyName, companyLogoUrl } = hrInfo;
-      await axiosSecure.patch(`/update-user-info/${userId}`, { HrEmail:email, companyName, companyLogoUrl });
+      await axiosSecure.patch(`/update-user-info/${userId}`, { HrEmail: email, companyName, companyLogoUrl });
     },
     onSuccess: () => {
       // Refetch unaffiliated users list after successful mutation
@@ -77,19 +85,21 @@ const AddAnEmployee = () => {
 
   const { unaffiliatedUsers } = data;
 
+  const packageLimit = payment?.amount === 5 ? 5 : payment?.amount === 8 ? 10 : 20;
+
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
-            <Title title={"Manager || Add-Employee"}></Title>
+      <Title title={"Manager || Add-Employee"} />
 
       <h1 className="text-2xl font-bold mb-4">Employee Page</h1>
 
       {/* Package Section */}
       <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-8">
         <h2 className="text-lg font-semibold mb-2">Package Details</h2>
-        <p>Affiliated Members: {data.affiliatedCount} / {data.packageLimit}</p>
+        <p>Affiliated Members: {data.affiliatedCount} / {packageLimit}</p>
         <button
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
-          onClick={() => window.location.href = `/packages?packageLimit=${data.packageLimit}`}
+          onClick={() => window.location.href = `/packages?packageLimit=${packageLimit}`}
         >
           Increase Limit
         </button>

@@ -11,8 +11,7 @@ const Packages = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const packageLimit = parseInt(queryParams.get('packageLimit'), 10); // Ensure packageLimit is a number
-
-
+  
   const handleChoosePlan = (amount) => {
     setPay(amount);
     setOpen(true);
@@ -64,12 +63,12 @@ const Packages = () => {
             </ul>
             <button
               onClick={() => handleChoosePlan(8)}
-              disabled={packageLimit >= 10} // Disable if packageLimit is 10 or more
+              disabled={packageLimit >= 8} // Disable if packageLimit is 10 or more
               className={`mt-6 w-full text-white font-bold py-2 px-4 rounded ${
-                packageLimit >= 10 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'
+                packageLimit >= 8 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'
               }`}
             >
-              {packageLimit >= 10 ? 'Plan Active' : 'Choose Plan'}
+              {packageLimit >= 8 ? 'Plan Active' : 'Choose Plan'}
             </button>
           </div>
           {/* Package 3 */}
@@ -86,12 +85,12 @@ const Packages = () => {
             </ul>
             <button
               onClick={() => handleChoosePlan(15)}
-              disabled={packageLimit >= 20} // Disable if packageLimit is 20 or more
+              disabled={packageLimit >= 15} // Disable if packageLimit is 20 or more
               className={`mt-6 w-full text-white font-bold py-2 px-4 rounded ${
-                packageLimit >= 20 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'
+                packageLimit >= 15 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'
               }`}
             >
-              {packageLimit >= 20 ? 'Plan Active' : 'Choose Plan'}
+              {packageLimit >= 15 ? 'Plan Active' : 'Choose Plan'}
             </button>
           </div>
         </div>
