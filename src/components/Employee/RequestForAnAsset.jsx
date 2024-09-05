@@ -38,8 +38,8 @@ const RequestForAnAsset = () => {
       });
       return response.data;
     },
-    enabled: !!managerEmail,
   });
+  
 
   // Fetch Pending Requests
   const { data: requests = [], refetch } = useQuery({

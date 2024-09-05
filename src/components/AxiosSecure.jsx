@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosSecure = axios.create({
-  // baseURL: 'https://server-assets.vercel.app',
-  baseURL:"http://localhost:9000"
+  baseURL: 'https://server-assets.vercel.app',
+  // baseURL:"http://localhost:9000"
 });
 
 // Add a request interceptor to include the latest token

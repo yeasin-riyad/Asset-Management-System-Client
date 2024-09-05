@@ -92,11 +92,11 @@ const router = createBrowserRouter([
                     },
                     {
                         path:'asset-list',
-                        element:<ManagerPrivate><AssetList></AssetList></ManagerPrivate>
+                        element:<ManagerPrivate><CheckPayment><AssetList></AssetList></CheckPayment></ManagerPrivate>
                     },
                     {
                         path:'add-an-asset',
-                        element:<ManagerPrivate><AddAnAsset></AddAnAsset></ManagerPrivate>
+                        element:<ManagerPrivate><CheckPayment><AddAnAsset></AddAnAsset></CheckPayment></ManagerPrivate>
                     },
                     {
                         path:'all-request',
