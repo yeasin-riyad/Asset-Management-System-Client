@@ -1,5 +1,6 @@
 import Title from "../Helmet"
 import About from "./About"
+import FeaturesSection from "./FeaturesSection"
 import Packages from "./Packages"
 import Slider from "./Slider"
 
@@ -11,6 +12,7 @@ const Home = () => {
         <Slider></Slider>
         <About></About>
         <Packages></Packages>
+        <FeaturesSection></FeaturesSection>
     </div>
   )
 }
