@@ -1,5 +1,6 @@
 import Title from "../Helmet"
 import About from "./About"
+import FAQSection from "./FAQSection "
 import FeaturesSection from "./FeaturesSection"
 import Packages from "./Packages"
 import Slider from "./Slider"
@@ -15,6 +16,7 @@ const Home = () => {
         <Packages></Packages>
         <FeaturesSection></FeaturesSection>
         <TestimonialsSection></TestimonialsSection>
+        <FAQSection></FAQSection>
     </div>
   )
 }
