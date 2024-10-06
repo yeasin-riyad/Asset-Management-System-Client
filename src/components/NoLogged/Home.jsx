@@ -3,6 +3,7 @@ import About from "./About"
 import FeaturesSection from "./FeaturesSection"
 import Packages from "./Packages"
 import Slider from "./Slider"
+import TestimonialsSection from "./TestimonialsSection"
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
         <About></About>
         <Packages></Packages>
         <FeaturesSection></FeaturesSection>
+        <TestimonialsSection></TestimonialsSection>
     </div>
   )
 }
